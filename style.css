@@ -13,10 +13,11 @@
 }
 
 #color-palette {
+  align-items: center;
   display: flex;
-  gap: 0 0.5rem;
   justify-content: center;
-  margin-top: 2rem;
+  margin: 2rem auto;
+  width: max-content;
 }
 
 .color {
@@ -24,7 +25,26 @@
   border-radius: 50%;
   cursor: pointer;
   height: 45px;
+  margin: 0 0.5rem;
+  opacity: 0.85;
+  transition: all 0.3s ease-in-out;
   width: 45px;
+}
+
+.color:hover {
+  box-shadow: 0 0 5px 4px orange;
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.selected {
+  box-shadow: 0 0 5px 4px limegreen;
+  cursor: default;
+  opacity: 1;
+}
+
+.selected:hover {
+  box-shadow: 1px 1px 5px 2px limegreen;
 }
 
 #pixel-board {

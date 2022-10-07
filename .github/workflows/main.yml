@@ -11,9 +11,7 @@ jobs:
         with:
           node-version: '12'
       - name: ESLint
-        uses: betrybe/eslint-linter-action@v2.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run lint
 
   stylelint:
     runs-on: ubuntu-18.04
@@ -23,9 +21,7 @@ jobs:
         with:
           node-version: '12'
       - name: Stylelint
-        uses: betrybe/stylelint-linter-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run lint:styles
 
   evaluator_job:
     runs-on: ubuntu-18.04
@@ -33,14 +29,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Cypress evaluator step
-        id: cypress
-        uses: betrybe/cypress-evaluator-action@v5
-        with:
-          repository-test-name: 'betrybe/sd-0x-block5-project-pixels-art-tests'
-          repository-test-branch: 'master'
-      - name: Store evaluation step
-        uses: betrybe/store-evaluation-action@v2
-        with:
-          evaluation-data: ${{ steps.cypress.outputs.result }}
-          environment: production
-          pr-number: ${{ steps.cypress.outputs.pr-number }}
+        run: npm run test

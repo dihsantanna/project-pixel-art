@@ -1,20 +1,30 @@
-const colorPalette = document.querySelector('#color-palette');
-const colors = colorPalette.querySelectorAll('.color');
+const SELECTED = 'selected';
+
+const createDivElement = (className) => {
+  const div = document.createElement('div');
+  div.className = className;
+  return div;
+};
+
+const setEventListeners = (element, eventType, eventFunction) => {
+  element.addEventListener(eventType, eventFunction);
+};
+
+const colorPaletteContainer = document.querySelector('#color-palette');
 
 const colorGenerator = () => {
-  const randomNumber = () => Math.floor(Math.random() * (255 + 1));
+  const randomNumber = (Math.random() * 0xfffff * 1000000).toString(16);
 
-  const color = `rgb(${randomNumber()}, ${randomNumber()}, ${randomNumber()})`;
+  const color = `#${randomNumber.slice(0, 6)}`;
 
-  return color !== 'rgb(255, 255, 255)' ? color : colorGenerator();
+  return color !== '#ffffff' || color !== '#000000' ? color : colorGenerator();
 };
 
 const generateColorsList = () => {
   const colorsList = [];
 
-  while (colorsList.length <= 3) {
+  while (colorsList.length < 3) {
     const color = colorGenerator();
-
     if (!colorsList.includes(color)) {
       colorsList.push(color);
     }
@@ -22,28 +32,49 @@ const generateColorsList = () => {
   return colorsList;
 };
 
-const setColorsInPalette = () => {
-  colors[0].style.backgroundColor = 'black';
+const selectColor = (event) => {
+  const selectedColor = document.querySelector('.selected');
+  selectedColor.classList.remove(SELECTED);
+
+  event.target.classList.add(SELECTED);
+};
+
+const setColorInPalette = (element, color) => {
+  const colorElement = element;
+  colorElement.style.backgroundColor = color;
+};
+
+const createColorPallet = () => {
   const colorsList = generateColorsList();
 
-  for (let index = 1; index < colors.length; index += 1) {
-    colors[index].style.backgroundColor = colorsList[index];
-  }
+  colorsList.forEach((color) => {
+    const colorElement = createDivElement('color');
+    setColorInPalette(colorElement, color);
+    setEventListeners(colorElement, 'click', selectColor);
+    colorPaletteContainer.appendChild(colorElement);
+  });
 };
 
 const pixelBoard = document.querySelector('#pixel-board');
 
 const boardSize = 5;
 
+const setSelectedColorInPixel = (event) => {
+  const selectedColor = document.querySelector('.selected');
+  const color = selectedColor.style.backgroundColor;
+
+  const pixel = event.target;
+  pixel.style.backgroundColor = color;
+};
+
 const createPixel = () => {
-  const pixel = document.createElement('div');
-  pixel.className = 'pixel';
+  const pixel = createDivElement('pixel');
+  setEventListeners(pixel, 'click', setSelectedColorInPixel);
   return pixel;
 };
 
 const createLine = (size) => {
-  const line = document.createElement('div');
-  line.className = 'line';
+  const line = createDivElement('line');
 
   for (let index = 0; index < size; index += 1) {
     const pixel = createPixel();
@@ -60,6 +91,6 @@ const createPixelBoard = (size) => {
 };
 
 window.onload = () => {
-  setColorsInPalette();
+  createColorPallet();
   createPixelBoard(boardSize);
 };
