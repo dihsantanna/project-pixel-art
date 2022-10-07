@@ -57,8 +57,9 @@ const createColorPallet = () => {
 
 const pixelBoard = document.querySelector('#pixel-board');
 const clearButton = document.querySelector('#clear-board');
+const boardSizeBtn = document.querySelector('#generate-board');
 
-const boardSize = 5;
+let boardSize = 5;
 
 const setSelectedColorInPixel = (event) => {
   const selectedColor = document.querySelector('.selected');
@@ -84,11 +85,40 @@ const createLine = (size) => {
   return line;
 };
 
-const createPixelBoard = (size) => {
-  for (let index = 0; index < size; index += 1) {
-    const line = createLine(size);
+const createPixelBoard = () => {
+  for (let index = 0; index < boardSize; index += 1) {
+    const line = createLine(boardSize);
     pixelBoard.appendChild(line);
   }
+};
+
+const createNewBoard = () => {
+  pixelBoard.innerHTML = '';
+  createPixelBoard();
+};
+
+const handleBoardSize = (size) => {
+  if (size < 5) {
+    boardSize = 5;
+  } else if (size > 50) {
+    boardSize = 50;
+  } else {
+    boardSize = size;
+  }
+};
+
+const changeBoardSize = () => {
+  const inputSize = document.querySelector('#board-size');
+
+  if (!inputSize.value) return alert('Board inválido!');
+
+  const re = /\d{1,2}/;
+  const size = re.test(inputSize.value) ? inputSize.value : boardSize;
+
+  handleBoardSize(size);
+
+  createNewBoard();
+  inputSize.value = boardSize;
 };
 
 const clearBoard = () => {
@@ -99,9 +129,9 @@ const clearBoard = () => {
   });
 };
 
-setEventListeners(clearButton, 'click', clearBoard);
-
 window.onload = () => {
   createColorPallet();
-  createPixelBoard(boardSize);
+  createPixelBoard();
+  setEventListeners(clearButton, 'click', clearBoard);
+  setEventListeners(boardSizeBtn, 'click', changeBoardSize);
 };
