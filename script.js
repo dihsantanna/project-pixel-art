@@ -31,6 +31,35 @@ const setColorsInPalette = () => {
   }
 };
 
+const pixelBoard = document.querySelector('#pixel-board');
+
+const boardSize = 5;
+
+const createPixel = () => {
+  const pixel = document.createElement('div');
+  pixel.className = 'pixel';
+  return pixel;
+};
+
+const createLine = (size) => {
+  const line = document.createElement('div');
+  line.className = 'line';
+
+  for (let index = 0; index < size; index += 1) {
+    const pixel = createPixel();
+    line.appendChild(pixel);
+  }
+  return line;
+};
+
+const createPixelBoard = (size) => {
+  for (let index = 0; index < size; index += 1) {
+    const line = createLine(size);
+    pixelBoard.appendChild(line);
+  }
+};
+
 window.onload = () => {
   setColorsInPalette();
+  createPixelBoard(boardSize);
 };
