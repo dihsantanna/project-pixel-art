@@ -44,7 +44,33 @@
 }
 
 .selected:hover {
-  box-shadow: 1px 1px 5px 2px limegreen;
+  box-shadow: 0 0 5px 4px limegreen;
+  transform: none;
+}
+
+.clear-btn {
+  background-color: rgb(255, 17, 0);
+  box-shadow: 0 0 5px 2px black;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  display: block;
+  font-size: 1.05em;
+  font-weight: 700;
+  margin: 1rem auto;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.clear-btn:hover {
+  box-shadow: none;
+  transform: scale(0.95);
+}
+
+.clear-btn:active {
+  box-shadow: 0 0 5px 2px black;
+  transform: scale(1);
 }
 
 #pixel-board {

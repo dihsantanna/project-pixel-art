@@ -21,9 +21,9 @@ const colorGenerator = () => {
 };
 
 const generateColorsList = () => {
-  const colorsList = [];
+  const colorsList = ['black'];
 
-  while (colorsList.length < 3) {
+  while (colorsList.length <= 3) {
     const color = colorGenerator();
     if (!colorsList.includes(color)) {
       colorsList.push(color);
@@ -47,8 +47,8 @@ const setColorInPalette = (element, color) => {
 const createColorPallet = () => {
   const colorsList = generateColorsList();
 
-  colorsList.forEach((color) => {
-    const colorElement = createDivElement('color');
+  colorsList.forEach((color, index) => {
+    const colorElement = createDivElement(`color${!index ? ` ${SELECTED}` : ''}`);
     setColorInPalette(colorElement, color);
     setEventListeners(colorElement, 'click', selectColor);
     colorPaletteContainer.appendChild(colorElement);
@@ -56,6 +56,7 @@ const createColorPallet = () => {
 };
 
 const pixelBoard = document.querySelector('#pixel-board');
+const clearButton = document.querySelector('#clear-board');
 
 const boardSize = 5;
 
@@ -89,6 +90,16 @@ const createPixelBoard = (size) => {
     pixelBoard.appendChild(line);
   }
 };
+
+const clearBoard = () => {
+  const pixels = document.querySelectorAll('.pixel');
+  Array.from(pixels).forEach((pixel) => {
+    const pixelElement = pixel;
+    pixelElement.style.backgroundColor = 'white';
+  });
+};
+
+setEventListeners(clearButton, 'click', clearBoard);
 
 window.onload = () => {
   createColorPallet();
