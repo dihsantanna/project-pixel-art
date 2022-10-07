@@ -6,20 +6,34 @@ jobs:
   eslint:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1.4.4
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set node version
+        uses: actions/setup-node@v1.4.4
         with:
           node-version: '12'
+
+      - name: Install dependencies
+        run: npm install
+
       - name: ESLint
         run: npm run lint
 
   stylelint:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1.4.4
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Set node version
+        uses: actions/setup-node@v1.4.4
         with:
           node-version: '12'
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Stylelint
         run: npm run lint:styles
 
@@ -27,6 +41,16 @@ jobs:
     runs-on: ubuntu-18.04
     name: Evaluator job
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set node version
+        uses: actions/setup-node@v1.4.4
+        with:
+          node-version: '12'
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Cypress evaluator step
         run: npm run test
