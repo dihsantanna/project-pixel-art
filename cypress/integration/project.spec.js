@@ -509,3 +509,61 @@ describe('12 - Faça com que as cores da paleta sejam geradas aleatoriamente ao 
     });
   });
 });
+
+describe.only('13 - É possível salvar as cores em uma paleta de cores salvas.', () => {
+  beforeEach(() => {
+    cy.visit('./index.html');
+  });
+
+  it('A paleta de cores salvas deve ser um elemento com o id `saved-colors`', () => {
+    cy.get('#saved-colors').should('be.visible');
+  })
+
+  it('Verifica se cada cor individual da paleta de cores salvas possui a `classe` chamada `salvage`.', () => {
+    cy.get('.salvage')
+      .should('have.length', 4)
+      .then((salvages) => {
+        for (let i = 0; i < salvages.length; i++) {
+          cy.wrap(salvages[i])
+            .should('be.visible');
+        }
+      });
+  });
+
+  it('Verifica se a cor inicial de fundo de cada elemento da paleta de cores salvas é a cor branca.', () => {
+    cy.get('.salvage')
+      .each((salvage) => {
+        cy.wrap(salvage)
+          .should('have.class', 'salvage')
+          .and('have.css', 'background-color', WHITE);
+      });
+  });
+
+  it('Verifica se cada elemento da paleta de cores salvas tem uma borda preta, sólida e com 1 pixel de largura;', () => {
+    cy.get('.salvage')
+      .each((salvage) => {
+        cy.wrap(salvage)
+          .and('have.css', 'border', `1px solid ${BLACK}`)
+          .and('have.class', 'salvage');
+      });
+  });
+
+  it('Verifica se a paleta de cores salvas lista todas as cores disponíveis para utilização, uma abaixo da outra.', () => {
+    cy.get('.salvage')
+      .then((salvages) => {
+        for (let index = 1; index < salvages.length; index += 1) {
+          const currentColor = salvages[index];
+          const previousColor = salvages[index - 1];
+          cy.wrap(currentColor)
+            .should('be.belowOf', previousColor)
+        }
+      });
+  });
+
+  it('Verifica se a paleta de cores salvas está fixada no topo à direita com 1rem de distância das bordas;', () => {
+    cy.get('#saved-colors')
+      .should('have.css', 'position', 'fixed')
+      .and('have.css', 'top', '16px')
+      .and('have.css', 'right', '16px');
+  });
+});

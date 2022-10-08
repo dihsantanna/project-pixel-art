@@ -10,6 +10,7 @@ const setEventListeners = (element, eventType, eventFunction) => {
   element.addEventListener(eventType, eventFunction);
 };
 
+// Colors Pallet
 const colorPaletteContainer = document.querySelector('#color-palette');
 
 const colorGenerator = () => {
@@ -54,6 +55,8 @@ const createColorPallet = () => {
     colorPaletteContainer.appendChild(colorElement);
   });
 };
+
+// Pixels Board
 
 const pixelBoard = document.querySelector('#pixel-board');
 const clearButton = document.querySelector('#clear-board');
@@ -129,6 +132,19 @@ const clearBoard = () => {
   });
 };
 
+// Saved Colors Pallet
+
+const savedColorsContainer = document.querySelector('#saved-colors');
+
+const createSavedColorsPallet = () => {
+  for (let index = 0; index < 4; index += 1) {
+    const colorElement = createDivElement('salvage');
+    setColorInPalette(colorElement, 'white');
+    setEventListeners(colorElement, 'click', selectColor);
+    savedColorsContainer.appendChild(colorElement);
+  }
+};
+
 // BG Animation
 
 const bgContainer = document.querySelector('ul');
@@ -174,6 +190,7 @@ const createAnimationElements = () => {
 window.onload = () => {
   createColorPallet();
   createPixelBoard();
+  createSavedColorsPallet();
   setEventListeners(clearButton, 'click', clearBoard);
   setEventListeners(boardSizeBtn, 'click', changeBoardSize);
   createAnimationElements();
