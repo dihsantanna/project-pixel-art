@@ -129,9 +129,52 @@ const clearBoard = () => {
   });
 };
 
+// BG Animation
+
+const bgContainer = document.querySelector('ul');
+
+const randomNumber = (min, max) => Math.random() * (max - min) + min;
+
+const createParams = () => ({
+  size: Math.floor(randomNumber(50, 120)),
+  position: randomNumber(1, 94),
+  delay: randomNumber(5, 1),
+  duration: randomNumber(10, 40),
+});
+
+const generateAnimation = (element, { size, position, delay, duration }, isUp) => {
+  const elementAnimation = element;
+  elementAnimation.style.width = `${size}px`;
+  elementAnimation.style.height = `${size}px`;
+  elementAnimation.style.backgroundColor = colorGenerator();
+  elementAnimation.style[isUp ? 'left' : 'bottom'] = `${position}%`;
+  elementAnimation.style.animationDelay = `${delay}s`;
+  elementAnimation.style.animationDuration = `${duration}s`;
+
+  elementAnimation.style.animationTimingFunction = `cubic-bezier(${Math
+    .random()}, ${Math
+    .random()}, ${Math
+    .random()})`;
+};
+
+const createAnimationElements = () => {
+  for (let i = 0; i < 50; i += 1) {
+    const circle = document.createElement('li');
+    const isUp = i % 2 === 0;
+    circle.className = `${isUp ? 'up' : 'right'}`;
+
+    const params = createParams();
+
+    generateAnimation(circle, params, isUp);
+
+    bgContainer.appendChild(circle);
+  }
+};
+
 window.onload = () => {
   createColorPallet();
   createPixelBoard();
   setEventListeners(clearButton, 'click', clearBoard);
   setEventListeners(boardSizeBtn, 'click', changeBoardSize);
+  createAnimationElements();
 };
