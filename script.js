@@ -1,16 +1,29 @@
 const SELECTED = 'selected';
 
-const createDivElement = (className) => {
+let INTERVAL_ID = null;
+
+const createDivElement = (className, id = '') => {
   const div = document.createElement('div');
   div.className = className;
+  div.id = id;
   return div;
+};
+
+const createButton = (className, id, text) => {
+  const button = document.createElement('button');
+  button.className = className;
+  button.id = id;
+  button.innerText = text;
+  return button;
 };
 
 const setEventListeners = (element, eventType, eventFunction) => {
   element.addEventListener(eventType, eventFunction);
 };
 
+// Colors Pallet
 const colorPaletteContainer = document.querySelector('#color-palette');
+const generateColorsButton = document.querySelector('.generate-colors');
 
 const colorGenerator = () => {
   const randomNumber = (Math.random() * 0xfffff * 1000000).toString(16);
@@ -54,6 +67,31 @@ const createColorPallet = () => {
     colorPaletteContainer.appendChild(colorElement);
   });
 };
+
+const leftSpinAnimation = (element) => {
+  const el = element;
+  let deg = 0;
+  clearInterval(INTERVAL_ID);
+
+  const spin = () => {
+    if (deg === -360) {
+      clearInterval(INTERVAL_ID);
+    } else {
+      deg -= 4;
+      el.style.transform = `rotate(${deg}deg)`;
+    }
+  };
+
+  INTERVAL_ID = setInterval(spin, 1);
+};
+
+const generateNewColors = () => {
+  leftSpinAnimation(generateColorsButton);
+  colorPaletteContainer.innerHTML = '';
+  createColorPallet();
+};
+
+// Pixels Board
 
 const pixelBoard = document.querySelector('#pixel-board');
 const clearButton = document.querySelector('#clear-board');
@@ -129,6 +167,41 @@ const clearBoard = () => {
   });
 };
 
+// Saved Colors Pallet
+
+const savedColorsContainer = document.querySelector('#saved-colors');
+
+const handleSavedColors = (event) => {
+  const selectedColor = document.querySelector('.selected');
+  const color = selectedColor.style.backgroundColor;
+  const button = event.target.id.match(/\d/)[0];
+
+  const colorElement = document.querySelector(`#save-${button}`);
+  colorElement.style.backgroundColor = color;
+  colorElement.classList.add('saved');
+};
+
+const selectSavedColor = (event) => {
+  const containSavedClass = event.target.className.includes('saved');
+  if (containSavedClass) selectColor(event);
+};
+
+const createSavedColorsPallet = () => {
+  for (let index = 0; index < 4; index += 1) {
+    const colorElementContainer = createDivElement('salvage-container');
+    const colorElement = createDivElement('salvage', `save-${index}`);
+    const saveColorButton = createButton('save-btn', `save-btn-${index}`, 'Salvar');
+
+    setColorInPalette(colorElement, 'white');
+    setEventListeners(colorElement, 'click', selectSavedColor);
+    setEventListeners(saveColorButton, 'click', handleSavedColors);
+
+    colorElementContainer.appendChild(saveColorButton);
+    colorElementContainer.appendChild(colorElement);
+    savedColorsContainer.appendChild(colorElementContainer);
+  }
+};
+
 // BG Animation
 
 const bgContainer = document.querySelector('ul');
@@ -150,11 +223,6 @@ const generateAnimation = (element, { size, position, delay, duration }, isUp) =
   elementAnimation.style[isUp ? 'left' : 'bottom'] = `${position}%`;
   elementAnimation.style.animationDelay = `${delay}s`;
   elementAnimation.style.animationDuration = `${duration}s`;
-
-  elementAnimation.style.animationTimingFunction = `cubic-bezier(${Math
-    .random()}, ${Math
-    .random()}, ${Math
-    .random()})`;
 };
 
 const createAnimationElements = () => {
@@ -174,7 +242,9 @@ const createAnimationElements = () => {
 window.onload = () => {
   createColorPallet();
   createPixelBoard();
+  createSavedColorsPallet();
   setEventListeners(clearButton, 'click', clearBoard);
   setEventListeners(boardSizeBtn, 'click', changeBoardSize);
+  setEventListeners(generateColorsButton, 'click', generateNewColors);
   createAnimationElements();
 };
