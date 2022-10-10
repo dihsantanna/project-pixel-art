@@ -1,4 +1,9 @@
 {
   "root": true,
-  "extends": ["trybe-fundamentals"]
+  "extends": [
+    "trybe-fundamentals"
+  ],
+  "rules": {
+    "max-lines": "off"
+  }
 }

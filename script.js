@@ -181,6 +181,11 @@ const handleSavedColors = (event) => {
   colorElement.classList.add('saved');
 };
 
+const selectSavedColor = (event) => {
+  const containSavedClass = event.target.className.includes('saved');
+  if (containSavedClass) selectColor(event);
+};
+
 const createSavedColorsPallet = () => {
   for (let index = 0; index < 4; index += 1) {
     const colorElementContainer = createDivElement('salvage-container');
@@ -188,7 +193,7 @@ const createSavedColorsPallet = () => {
     const saveColorButton = createButton('save-btn', `save-btn-${index}`, 'Salvar');
 
     setColorInPalette(colorElement, 'white');
-    setEventListeners(colorElement, 'click', selectColor);
+    setEventListeners(colorElement, 'click', selectSavedColor);
     setEventListeners(saveColorButton, 'click', handleSavedColors);
 
     colorElementContainer.appendChild(saveColorButton);
