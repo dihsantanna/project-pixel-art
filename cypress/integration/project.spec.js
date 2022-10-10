@@ -510,7 +510,7 @@ describe('12 - Faça com que as cores da paleta sejam geradas aleatoriamente ao 
   });
 });
 
-describe.only('13 - É possível salvar as cores em uma paleta de cores salvas.', () => {
+describe('13 - Página deve conter uma paleta de cores salvas.', () => {
   beforeEach(() => {
     cy.visit('./index.html');
   });
@@ -560,10 +560,156 @@ describe.only('13 - É possível salvar as cores em uma paleta de cores salvas.'
       });
   });
 
-  it('Verifica se a paleta de cores salvas está fixada no topo à direita com 1rem de distância das bordas;', () => {
+  it('Verifica se cada slot de cor possui um botão a esquerda com o texto `Salvar` para salvar a cor selecionada e com a classe `save-btn`', () => {
+    cy.get('.salvage')
+      .then((salvages) => {
+        cy.get('.save-btn')
+          .then((saveBtns) => {
+            for (let index = 0; index < salvages.length; index += 1) {
+              const currentColor = salvages[index];
+              const currentSaveBtn = saveBtns[index];
+              cy.wrap(currentSaveBtn)
+                .contains('Salvar')
+              cy.wrap(currentColor)
+                .should('be.onTheRightOf', currentSaveBtn)
+            }
+          });
+      })
+  })
+
+  it('Verifica se a paleta de cores salvas está fixada no topo à direita com 16px de distância das bordas;', () => {
     cy.get('#saved-colors')
       .should('have.css', 'position', 'fixed')
       .and('have.css', 'top', '16px')
       .and('have.css', 'right', '16px');
   });
 });
+
+describe('14 - Deve ser possível salvar a cor selecionada na paleta de cores salvas', () => {
+  beforeEach(() => {
+    cy.visit('./index.html');
+  });
+
+  it('Antes de salvar qualquer cor não deve ser possível selecionar as cores na paleta de cores salvas', () => {
+    cy.get('.salvage')
+      .each((salvage) => {
+        cy.wrap(salvage)
+          .click()
+          .should('not.have.class', 'selected');
+      });
+  })
+
+  it('Verifica se ao clicar no botão `Salvar` a cor selecionada é salva na paleta de cores salvas', () => {
+    cy.get('.color')
+      .then((colors) => {
+        for (let index = 0; index < colors.length; index += 1) {
+          const currentColor = colors[index];
+          cy.wrap(currentColor)
+            .click()
+            .then(() => {
+              cy.get('.save-btn')
+                .eq(index)
+                .click()
+                .then(() => {
+                  cy.get('.salvage')
+                    .eq(index)
+                    .should('have.css', 'background-color', Cypress.$(currentColor).css('background-color'));
+                });
+            });
+        }
+      });
+  });
+
+  it('Verifica se ao clicar em uma cor da paleta de cores salvas, a cor selecionada é a cor da paleta de cores salvas', () => {
+    cy.get('.color')
+      .then((colors) => {
+        for (let index = 0; index < colors.length; index += 1) {
+          const currentColor = colors[index];
+          cy.wrap(currentColor)
+            .click()
+            .then(() => {
+              cy.get('.save-btn')
+                .eq(index)
+                .click()
+                .then(() => {
+                  cy.get('.salvage')
+                    .eq(index)
+                    .click()
+                    .then(() => {
+                      cy.get('.selected')
+                        .should('have.css', 'background-color', Cypress.$(currentColor).css('background-color'));
+                    });
+                });
+            });
+        }
+      });
+  });
+
+  it('Verifica se é possível utilizar a cor selecionada na paleta de cores selecionadas para pintar o quadro de pixels', () => {
+    cy.get('.color')
+      .then((colors) => {
+        for (let index = 0; index < colors.length; index += 1) {
+          const currentColor = colors[index];
+          cy.wrap(currentColor)
+            .click()
+            .then(() => {
+              cy.get('.save-btn')
+                .eq(index)
+                .click()
+                .then(() => {
+                  cy.get('.salvage')
+                    .eq(index)
+                    .click()
+                    .then(() => {
+                      cy.get('.pixel')
+                        .each((pixel) => {
+                          cy.wrap(pixel)
+                            .click()
+                            .should('have.css', 'background-color', Cypress.$(currentColor).css('background-color'));
+                        });
+                    });
+                });
+            });
+        }
+      });
+  });
+})
+
+describe('15 - Deve existir um botão para gerar uma nova paleta de cores', () => {
+  beforeEach(() => {
+    cy.visit('./index.html');
+  });
+
+  it('Verifica se o botão possui a classe `generate-colors`', () => {
+    cy.get('.generate-colors')
+      .should('be.visible');
+  });
+
+  it('Verifica se ao clicar no botão ele gera novas cores aleatórias para a paleta de cores, exceto pela cor `preta`', () => {
+    cy.get('.color')
+      .then((colors) => {
+        const firstColors = [];
+        for (let index = 0; index < colors.length; index += 1) {
+          const currentColor = colors[index];
+          firstColors.push(Cypress.$(currentColor).css('background-color'));
+        }
+        cy.get('.generate-colors')
+          .click()
+          .then(() => {
+            cy.get('.color')
+              .then((newColors) => {
+                for (let index = 0; index < newColors.length; index += 1) {
+                  const currentColor = newColors[index];
+                  if (index === 0) {
+                    cy.wrap(currentColor)
+                      .should('have.css', 'background-color', firstColors[index]);
+                  } else {
+                    cy.wrap(currentColor)
+                    .should('not.have.css', 'background-color', firstColors[index]);
+                  }
+                }
+              });
+          });
+      });
+  });
+})
