@@ -15,7 +15,11 @@
 
 Neste projeto, foi implementado um editor de arte com pixels. Ou seja, dada uma paleta de cores e um quadro composto por pixels, é possível pintar o que quiser no quadro! Para isto foi utilizado `javascript`, `css` e `html`.
 
+Para os testes foi utilizado o framework `Cypress`, somente os requisitos 13, 14 e 15 foram escritos por mim.
+
 ---
+
+![Demonstração da pagina](demonstração.gif)
 
 ## Instruções para rodar a aplicação:
 
